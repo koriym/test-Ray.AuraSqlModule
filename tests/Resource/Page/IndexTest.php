@@ -15,22 +15,11 @@ class IndexTest extends \PHPUnit_Framework_TestCase
         $this->resource = clone $GLOBALS['RESOURCE'];
     }
 
-    public function testOnGet()
+    public function testMaster()
     {
-        // resource request
-        $page = $this->resource->get->uri('page://self/index')->withQuery(['name' => 'koriym'])->eager->request();
+        $page = $this->resource->get->uri('page://self/index')->eager->request();
+        /* @var $page NamedPdo */
         $this->assertSame(200, $page->code);
-        $this->assertSame('Hello koriym', $page['greeting']);
-
-        return $page;
-    }
-
-    /**
-     * @depends testOnGet
-     */
-    public function testView($page)
-    {
-        $json = json_decode((string) $page);
-        $this->assertSame('Hello koriym', $json->greeting);
+        $this->assertSame('mysql:host=localhost;dbname=default', $page->dsn);
     }
 }
